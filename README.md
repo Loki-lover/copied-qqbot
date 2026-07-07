@@ -94,10 +94,10 @@ astrbot_plugin_rollpig/
 - 图片自动按 id 匹配，无需在 JSON 中写图片后缀 🐖  
 
 ## 🎖️ 致谢
-[![GitHub](https://img.shields.io/badge/作者-MegSopern-pink)](https://github.com/MegSopern)
-- 本插件基于[nonebot-plugin-rollpig](https://github.com/Bearlele/nonebot-plugin-rollpig)的核心逻辑进行改造。
-- 欢迎前往原仓库为作者的辛苦付出点亮 ⭐ Star 支持！
-- 此外，作为我在astrbot这边搬运的插件，因为[astrbot_plugin_rollpig](https://github.com/MegSopern/astrbot_plugin_rollpig)也有大半年没有加入新的小猪了，我就自己请人画，并自己在网上搬运可爱好玩的小猪添加到仓库中。
+[![GitHub](https://img.shields.io/badge/astrbot插件的原作者-MegSopern-pink)](https://github.com/MegSopern)
+- astrbot的插件基于[nonebot-plugin-rollpig](https://github.com/Bearlele/nonebot-plugin-rollpig)的核心逻辑进行改造。
+- 欢迎前往nonebot原仓库为作者的辛苦付出点亮 ⭐ Star 支持！
+- 而我，是在astrbot这边搬运的插件，因为[astrbot_plugin_rollpig](https://github.com/MegSopern/astrbot_plugin_rollpig)有大半年没有加入新的小猪了，我就自己请人画，并自己在网上搬运可爱好玩的小猪添加到仓库中，并增添了一些功能。
 
 
 ## 📜 许可证
