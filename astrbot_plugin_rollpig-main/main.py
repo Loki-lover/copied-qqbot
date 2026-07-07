@@ -174,6 +174,56 @@ class RollPigPlugin(Star):
             json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8"
         )
 
+    def select_text_variant(self, pig_data: dict) -> dict:
+        """
+        为小猪数据随机选择一组文案，兼容旧版单文案格式。
+
+        支持以下写法：
+        1. description / analysis 直接写字符串（旧格式）
+        2. description / analysis 写字符串数组
+        3. variants / captions / copies / texts / copywriting / 文案 写数组
+           - 数组项是对象时，可覆盖 name / description / analysis
+           - 数组项是字符串时，作为 description 使用
+        """
+        selected = dict(pig_data)
+        variant_fields = ("variants", "captions", "copies", "texts", "copywriting", "文案")
+
+        for field in variant_fields:
+            variants = selected.get(field)
+            if isinstance(variants, list) and variants:
+                variant = random.choice(variants)
+                if isinstance(variant, dict):
+                    for key in ("name", "description", "analysis"):
+                        if key in variant:
+                            selected[key] = variant[key]
+                elif isinstance(variant, str):
+                    selected["description"] = variant
+                break
+
+        description = selected.get("description")
+        analysis = selected.get("analysis")
+        if isinstance(description, list) and description:
+            if isinstance(analysis, list) and len(description) == len(analysis):
+                index = random.randrange(len(description))
+                selected["description"] = description[index]
+                selected["analysis"] = analysis[index]
+            else:
+                selected["description"] = random.choice(description)
+
+        analysis = selected.get("analysis")
+        if isinstance(analysis, list) and analysis:
+            selected["analysis"] = random.choice(analysis)
+
+        for field in variant_fields:
+            selected.pop(field, None)
+
+        if not isinstance(selected.get("description"), str):
+            selected["description"] = "无描述"
+        if not isinstance(selected.get("analysis"), str):
+            selected["analysis"] = "无解析"
+
+        return selected
+
     def find_image_file(self, pig_id: str) -> Path | None:
         """
         查找对应ID的图片文件\n
@@ -372,7 +422,10 @@ class RollPigPlugin(Star):
         user_records = today_cache["records"]
 
         if user_id in user_records:
-            pig = user_records[user_id]
+            pig = self.select_text_variant(user_records[user_id])
+            if pig != user_records[user_id]:
+                user_records[user_id] = pig
+                self.save_json(self.today_path, today_cache)
             await self.send_rendered_pig(event, pig, user_id)
             return
 
@@ -380,7 +433,7 @@ class RollPigPlugin(Star):
             await event.send(event.plain_result("小猪信息加载失败，请检查后台报错！"))
             return
 
-        pig = random.choice(self.pig_list)
+        pig = self.select_text_variant(random.choice(self.pig_list))
         user_records[user_id] = pig
         self.save_json(self.today_path, today_cache)
 
